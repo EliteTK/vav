@@ -1,46 +1,60 @@
-DIR_SRC := src
-DIR_TESTS := tests
+srcdir = .
 
-PREFIX := /usr
-LIBDIR := $(PREFIX)/lib
-INCLUDEDIR := $(PREFIX)/include
+CC = gcc
 
-SRCDIR := src
+INSTALL = /install -c
+INSTALL_PROGRAM = $(INSTALL)
+INSTALL_DATA = $(INSTALL) -m 644
 
-SOURCES := vec.o
-SOURCES := $(addprefix $(SRCDIR)/,$(SOURCES))
+prefix = /usr/local
 
-OUTPUT := libvec.so
+exec_prefix = $(prefix)
 
-VPATH := src:tests
+libdir = $(exec_prefix)/lib
+includedir = $(prefix)/include
 
-.PHONY: check install uninstall clean
+CFLAGS = -O2 -Wall -I$(srcdir) -std=gnu11
+LDFLAGS =
+LDLIBS = -lm
 
-all : $(OUTPUT)
+SRCS = vec.c
+OBJS = $(SRCS:.c=.o)
 
-$(SRCDIR)/%.o : CFLAGS = -O2 -Wall -std=gnu11 -fPIC
+SRCS_TEST = test.c vec.c
+OBJS_TEST = $(SRCS_TEST:.c=.o)
 
-$(OUTPUT) : LDFLAGS := -shared -lm
-$(OUTPUT) : src/vec.o
+.PHONY: all
+all: libvec.so
+
+libvec.so: LDFLAGS += -shared
+libvec.so: $(OBJS)
 	$(CC) $(LDFLAGS) -o $@ $^
 
-test.o : CFLAGS = -O2 -Wall -std=gnu11 -I src
+$(OBJS): CFLAGS += -fPIC
 
-test : LDFLAGS := -lcheck -lm
-test : test.o vec.o
-
-check : vec.o test
+.PHONY: check
+check: test
 	@./test
 
-install : $(LIBDIR)/
+test: LDLIBS += -lcheck
+test: $(OBJS_TEST)
 
-uninstall :
+.PHONY: install
+install: all
+	$(INSTALL) -d $(DESTDIR)$(libdir)
+	$(INSTALL_PROGRAM) libvec.so $(DESTDIR)$(libdir)
+	$(INSTALL) -d $(DESTDIR)$(includedir)
+	$(INSTALL_PROGRAM) vec.h $(DESTDIR)$(includedir)
 
-clean :
-	rm -f *.o
-	rm -f *.so
-	rm -f test
-	rm -f tags
+.PHONY: uninstall
+uninstall:
+	$(RM) $(DESTDIR)$(libdir)/libvec.so
+	$(RM) $(DESTDIR)$(includedir)/vec.h
 
-TAGS :
-	ctags -R .
+.PHONY: clean
+clean:
+	$(RM) *.o *.so test tags
+
+.PHONY: tags
+TAGS:
+	ctags -R "$(srcdir)"
