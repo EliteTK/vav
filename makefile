@@ -2,7 +2,7 @@ srcdir = .
 
 CC = gcc
 
-INSTALL = /install -c
+INSTALL = install -c
 INSTALL_PROGRAM = $(INSTALL)
 INSTALL_DATA = $(INSTALL) -m 644
 
@@ -28,7 +28,7 @@ all: libvec.so
 
 libvec.so: LDFLAGS += -shared
 libvec.so: $(OBJS)
-	$(CC) $(LDFLAGS) -o $@ $^
+	$(CC) $(CFLAGS) $(LDFLAGS) -o $@ $^
 
 $(OBJS): CFLAGS += -fPIC
 
