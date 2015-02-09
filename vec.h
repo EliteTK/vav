@@ -23,10 +23,9 @@ float *vec_addm(float * const, float * const, const float);
 
 #define VEC_HEADER(vector) ((struct vec_header *)(vector - 1))
 
-#define _VEC_NARG(...) \
-	 _VEC_NARG_(__VA_ARGS__,_VEC_RSEQ_N())
-#define _VEC_NARG_(...) \
-	 _VEC_ARG_N(__VA_ARGS__)
+#define _VEC_NARG(...) _VEC_NARG_(__VA_ARGS__,_VEC_RSEQ_N())
+#define _VEC_NARG_(...) _VEC_ARG_N(__VA_ARGS__)
+
 #define _VEC_ARG_N( \
 	  _1, _2, _3, _4, _5, _6, _7, _8, _9,_10, \
 	 _11,_12,_13,_14,_15,_16,_17,_18,_19,_20, \
