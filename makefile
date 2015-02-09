@@ -2,7 +2,7 @@ srcdir = .
 
 CC = gcc
 
-INSTALL = install -c
+INSTALL = install
 INSTALL_PROGRAM = $(INSTALL)
 INSTALL_DATA = $(INSTALL) -m 644
 
