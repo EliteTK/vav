@@ -70,8 +70,10 @@ float vec_dot(float * const vector_a, float * const vector_b)
 	for (uint32_t i = 0; i < length; i++)
 		result += vector_a[i] * vector_b[i];
 
+	if (vector_b != vector_a)
+		vec_deltemp(vector_b);
+
 	vec_deltemp(vector_a);
-	vec_deltemp(vector_b);
 
 	return result;
 }
