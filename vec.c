@@ -1,4 +1,3 @@
-/* vec.c */
 #include <stdint.h>
 #include <stdlib.h>
 #include <string.h>
@@ -11,8 +10,6 @@
 		_a < _b ? _a : _b; \
 		})
 
-
-/* Creation / Deletion. */
 
 float *vec_new(const uint32_t length, const float * const values)
 {
@@ -58,8 +55,6 @@ inline float *vec_perm(float * const vector) {
 	return vector;
 }
 
-
-/* Mathematical. */
 
 float vec_dot(float * const vector_a, float * const vector_b)
 {
