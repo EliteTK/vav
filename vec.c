@@ -65,7 +65,8 @@ inline double *vec_temp(double * const vector)
 	return vector;
 }
 
-inline double *vec_perm(double * const vector) {
+inline double *vec_perm(double * const vector)
+{
 	VEC_HEADER(vector)->temp = 0;
 	return vector;
 }
@@ -117,7 +118,7 @@ double *vec_cross(double * const vector_a, double * const vector_b)
 	}
 }
 
-double vec_len(double * const vector_a)
+double vec_len(double * const vector)
 {
 	return sqrtf(vec_dot(vector_a, vector_a));
 }

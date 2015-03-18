@@ -8,17 +8,17 @@ struct vec_header {
 	double vector[];
 };
 
-double *vec_new(const uint64_t, const double * const);
-double *vec_blank(const uint64_t);
-void vec_del(double * const);
-void vec_deltemp(double * const);
-double *vec_temp(double * const);
-double *vec_perm(double * const);
+double *vec_new(const uint64_t length, const double * const values);
+double *vec_blank(const uint64_t length);
+void vec_del(double * const vector);
+void vec_deltemp(double * const vector);
+double *vec_temp(double * const vector);
+double *vec_perm(double * const vector);
 
-double vec_dot(double * const, double * const);
-double *vec_cross(double * const, double * const);
-double vec_len(double * const);
-double *vec_addm(double * const, double * const, const double);
+double vec_dot(double * const vector_a, double * const vector_b);
+double *vec_cross(double * const vector_a, double * const vector_b);
+double vec_len(double * const vector);
+double *vec_addm(double * const vector_a, double * const vector_b, const double multiplier);
 
 #define VEC_HEADER(vector) ((struct vec_header *)(vector - 1))
 
