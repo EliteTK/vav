@@ -4,7 +4,7 @@
 
 START_TEST (test_vec)
 {
-	float *v1 = vec(4, 7, 2);
+	double *v1 = vec(4, 7, 2);
 
 	ck_assert_msg(v1[0] == 4.0, "New vector(4, 7, 2) [0] is not 4.0");
 	ck_assert_msg(v1[1] == 7.0, "New vector(4, 7, 2) [1] is not 7.0");
@@ -18,7 +18,7 @@ END_TEST
 
 START_TEST (test_vec_blank)
 {
-	float *v1 = vec_blank(3);
+	double *v1 = vec_blank(3);
 
 	ck_assert_msg(v1[0] == 0.0, "Blank vector(3) [0] is not 0.0.");
 	ck_assert_msg(v1[1] == 0.0, "Blank vector(3) [0] is not 0.0.");
@@ -32,7 +32,7 @@ END_TEST
 
 START_TEST (test_vec_perm)
 {
-	float *v1 = vec(4, 7, 2);
+	double *v1 = vec(4, 7, 2);
 
 	vec_perm(v1);
 
@@ -44,7 +44,7 @@ END_TEST
 
 START_TEST (test_vec_temp)
 {
-	float *v1 = vec(4, 7, 2);
+	double *v1 = vec(4, 7, 2);
 
 	vec_temp(v1);
 
@@ -57,7 +57,7 @@ END_TEST
 
 START_TEST (test_vec_math_dot)
 {
-	float result = vec_dot(vec(10, -4, 2), vec(4, 2, 12));
+	double result = vec_dot(vec(10, -4, 2), vec(4, 2, 12));
 
 	ck_assert_msg(result == 56.0, "(10, -4, 2) · (4, 2, 12) is not 56.0.");
 }
@@ -65,7 +65,7 @@ END_TEST
 
 START_TEST (test_vec_math_cross)
 {
-	float *result = vec_cross(vec(3, 5, 4), vec(-2, 1, 3));
+	double *result = vec_cross(vec(3, 5, 4), vec(-2, 1, 3));
 
 	ck_assert_msg(result[0] == 11.0, "(3, 5, 4) × (-2, 1, 3) [0] is not 11.0.");
 	ck_assert_msg(result[1] == -17.0, "(3, 5, 4) × (-2, 1, 3) [1] is not -17.0.");
@@ -77,7 +77,7 @@ END_TEST
 
 START_TEST (test_vec_math_len)
 {
-	float result = vec_len(vec(2, -2, 1));
+	double result = vec_len(vec(2, -2, 1));
 
 	ck_assert_msg(result == 3, "Length of (2, -2, 1) is not 3");
 }
@@ -85,7 +85,7 @@ END_TEST
 
 START_TEST (test_vec_math_addm)
 {
-	float *result = vec_addm(vec(7, 3, 0), vec(1, -5, 3), 3);
+	double *result = vec_addm(vec(7, 3, 0), vec(1, -5, 3), 3);
 
 	ck_assert_msg(result[0] == 10.0, "(7, 3, 0) + (1, -5, 3) × 3 [0] is not 10.0.");
 	ck_assert_msg(result[1] == -12.0, "(7, 3, 0) + (1, -5, 3) × 3 [1] is not -12.0.");

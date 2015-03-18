@@ -1,29 +1,28 @@
-/* vec.h */
 #ifndef __VEC_H
 
 #include <stdint.h>
 
 struct vec_header {
-	uint32_t temp   : 1;
-	uint32_t length : 31;
-	float vector[];
+	uint64_t temp   : 1;
+	uint64_t length : 63;
+	double vector[];
 };
 
-float *vec_new(const uint32_t, const float * const);
-float *vec_blank(const uint32_t);
-void vec_del(float * const);
-void vec_deltemp(float * const);
-float *vec_temp(float * const);
-float *vec_perm(float * const);
+double *vec_new(const uint64_t, const double * const);
+double *vec_blank(const uint64_t);
+void vec_del(double * const);
+void vec_deltemp(double * const);
+double *vec_temp(double * const);
+double *vec_perm(double * const);
 
-float vec_dot(float * const, float * const);
-float *vec_cross(float * const, float * const);
-float vec_len(float * const);
-float *vec_addm(float * const, float * const, const float);
+double vec_dot(double * const, double * const);
+double *vec_cross(double * const, double * const);
+double vec_len(double * const);
+double *vec_addm(double * const, double * const, const double);
 
 #define VEC_HEADER(vector) ((struct vec_header *)(vector - 1))
 
-#define vec(...) vec_new(sizeof((float []){ __VA_ARGS__ }) / sizeof(float), (float []){ __VA_ARGS__ })
+#define vec(...) vec_new(sizeof((double []){ __VA_ARGS__ }) / sizeof(double), (double []){ __VA_ARGS__ })
 
 #define __VEC_H
-#endif
+#endif /* __VEC_H */

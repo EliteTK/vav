@@ -5,64 +5,64 @@
 #include "vec.h"
 
 #define _VEC_MIN_LENGTH(a, b) ({ \
-		float _a = VEC_HEADER(a)->length; \
-		float _b = VEC_HEADER(b)->length; \
+		double _a = VEC_HEADER(a)->length; \
+		double _b = VEC_HEADER(b)->length; \
 		_a < _b ? _a : _b; \
 		})
 
 
-float *vec_new(const uint32_t length, const float * const values)
+double *vec_new(const uint64_t length, const double * const values)
 {
 	struct vec_header *vector = malloc(sizeof(struct vec_header) * (length + 1));
 
 	vector->temp   = 1;
 	vector->length = length;
 
-	memcpy(vector + 1, values, length * sizeof(float));
+	memcpy(vector + 1, values, length * sizeof(double));
 
-	return (float *)(vector + 1);
+	return (double *)(vector + 1);
 }
 
-float *vec_blank(const uint32_t length)
+double *vec_blank(const uint64_t length)
 {
 	struct vec_header *vector = calloc(sizeof(struct vec_header), (length + 1));
 
 	vector->temp   = 1;
 	vector->length = length;
 
-	return (float *)(vector + 1);
+	return (double *)(vector + 1);
 }
 
-void vec_del(float * const vector)
+void vec_del(double * const vector)
 {
 	free(vector - 1);
 }
 
-void vec_deltemp(float * const vector)
+void vec_deltemp(double * const vector)
 {
 	if (VEC_HEADER(vector)->temp)
 		vec_del(vector);
 }
 
-inline float *vec_temp(float * const vector)
+inline double *vec_temp(double * const vector)
 {
 	VEC_HEADER(vector)->temp = 1;
 	return vector;
 }
 
-inline float *vec_perm(float * const vector) {
+inline double *vec_perm(double * const vector) {
 	VEC_HEADER(vector)->temp = 0;
 	return vector;
 }
 
 
-float vec_dot(float * const vector_a, float * const vector_b)
+double vec_dot(double * const vector_a, double * const vector_b)
 {
-	uint32_t length = _VEC_MIN_LENGTH(vector_a, vector_b);
+	uint64_t length = _VEC_MIN_LENGTH(vector_a, vector_b);
 
-	float result = 0;
+	double result = 0;
 
-	for (uint32_t i = 0; i < length; i++)
+	for (uint64_t i = 0; i < length; i++)
 		result += vector_a[i] * vector_b[i];
 
 	if (vector_b != vector_a)
@@ -73,7 +73,7 @@ float vec_dot(float * const vector_a, float * const vector_b)
 	return result;
 }
 
-float *vec_cross(float * const vector_a, float * const vector_b)
+double *vec_cross(double * const vector_a, double * const vector_b)
 {
 	struct vec_header *vech_a = VEC_HEADER(vector_a);
 	struct vec_header *vech_b = VEC_HEADER(vector_b);
@@ -81,7 +81,7 @@ float *vec_cross(float * const vector_a, float * const vector_b)
 	if (vech_a->length != vech_b->length && vech_a->length != 3)
 		return NULL;
 
-	float i, j, k;
+	double i, j, k;
 	i = vector_a[1] * vector_b[2] - vector_a[2] * vector_b[1];
 	j = vector_a[2] * vector_b[0] - vector_a[0] * vector_b[2];
 	k = vector_a[0] * vector_b[1] - vector_a[1] * vector_b[0];
@@ -98,23 +98,23 @@ float *vec_cross(float * const vector_a, float * const vector_b)
 		vector_b[2] = k;
 		return vector_b;
 	} else {
-		return vec_new(3, (float []){i, j, k});
+		return vec_new(3, (double []){i, j, k});
 	}
 }
 
-float vec_len(float * const vector_a)
+double vec_len(double * const vector_a)
 {
 	return sqrtf(vec_dot(vector_a, vector_a));
 }
 
-float *vec_addm(float * const vector_a, float * const vector_b, const float multiplier)
+double *vec_addm(double * const vector_a, double * const vector_b, const double multiplier)
 {
 	struct vec_header *vech_a = VEC_HEADER(vector_a);
 	struct vec_header *vech_b = VEC_HEADER(vector_b);
 
-	uint32_t length = _VEC_MIN_LENGTH(vector_a, vector_b);
+	uint64_t length = _VEC_MIN_LENGTH(vector_a, vector_b);
 
-	float *output;
+	double *output;
 
 	if (vech_a->temp)
 		output = vector_a;
@@ -123,7 +123,7 @@ float *vec_addm(float * const vector_a, float * const vector_b, const float mult
 	else
 		output = vec_blank(length);
 
-	for (uint32_t i = 0; i < length; i++)
+	for (uint64_t i = 0; i < length; i++)
 		output[i] = vector_a[i] + vector_b[i] * multiplier;
 
 	if (vech_a->temp && vech_b->temp)
