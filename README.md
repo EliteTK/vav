@@ -6,10 +6,11 @@ About
 Very Awesome Vectors (VAV) is an attempt at implementing vectors in C, but
 doing so in a manner that doesn't look like something a dog chewed on.
 
-Currently vectors up to 2147483648 in length are possible, but the standard
-vec() command only allows for a maximum of 62 because of a limitation with how
-the CPP works. However, it is unlikely that anyone will ever need longer
-vectors.
+Currently, I have no clue how large vectors can be but the vector length stored
+in the header can get up to 9223372036854775807. The limit is then made smaller
+by the check for a heap overflow and possibly even smaller because of the use
+of variadic macros. However, I can guarantee a length of up to 60 which should
+be about 56 more than anyone ever needs.
 
 If you're familiar with SDS you might think that VAV sounds a bit like SDS, in
 fact, I first had this idea before I knew about SDS, but seeing SDS in practice
@@ -18,8 +19,8 @@ persuaded me to put this idea to (virtual) paper.
 Quick Run-down
 --------------
 Copy vec.c and vec.h into your project, use vec(your, vector, here) to create a
-new vector, this returns a float pointer, this is to use array indices with the
-vectors.
+new vector, this returns a float pointer, this is to allow the use of array
+indices with the vectors.
 
 `vec_cross` and `vec_dot` should be self explanatory for anyone who knows
 anything about vectors (`vec_cross` only works on vec3). They both take two
@@ -61,18 +62,15 @@ that the above only uses 3 mallocs, one for each initial vector.
 
 Technicalities
 --------------
-Right now VAV uses a 32 bit header containing the length (31 bits) and the
+Right now VAV uses a 64 bit header containing the length (64 bits) and the
 temporary state (1 bit).
 
 The implementation of the vec() macro means that it can figure out how many
-arguments you pass it, however, it means that it is limited to just 62 units
-length and might make it limited to GCC.
+arguments you pass it.
 
 Future Plans
 ------------
-There are future plans to expand the testing (to catch all the bugs) and make
-VAV use a 64 bit header.
-There are also plans to rename all the functions into something shorter and
+There are plans to rename all the functions into something shorter and
 more vav oriented, for example: `vav_c, vav_d, vav_l, vav_a and vav` for the
 most used stackable functions. Or possible even `v_c, v_d, v_l and v` but
 really, this is a drop in solution, want something different? Just changed it.
