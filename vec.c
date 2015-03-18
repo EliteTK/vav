@@ -120,7 +120,7 @@ double *vec_cross(double * const vector_a, double * const vector_b)
 
 double vec_len(double * const vector)
 {
-	return sqrtf(vec_dot(vector_a, vector_a));
+	return sqrtf(vec_dot(vector, vector));
 }
 
 double *vec_addm(double * const vector_a, double * const vector_b, const double multiplier)
