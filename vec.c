@@ -14,7 +14,7 @@
 
 static inline bool length_will_overflow(const uint64_t length)
 {
-	if (length > sizeof(uint64_t) - sizeof(struct vec_header) - 1)
+	if (length > (sizeof(uint64_t) >> 1) - sizeof(struct vec_header))
 		return true;
 
 	return false;
