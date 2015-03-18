@@ -1,60 +1,28 @@
-srcdir = .
-
-CC = gcc
-
-INSTALL = install
-INSTALL_PROGRAM = $(INSTALL)
-INSTALL_DATA = $(INSTALL) -m 644
-
-prefix = /usr/local
-
-exec_prefix = $(prefix)
-
-libdir = $(exec_prefix)/lib
-includedir = $(prefix)/include
-
-CFLAGS = -O2 -Wall -I$(srcdir) -std=gnu11
-LDFLAGS =
+CFLAGS = -std=c11 -fPIC -Wall -Wextra
+LDFLAGS = -Wl,--as-needed
 LDLIBS = -lm
+OBJECTS = vec.o
+BINARIES = libvec.so test
 
-SRCS = vec.c
-OBJS = $(SRCS:.c=.o)
+DEBUG ?= 0
+ifeq ($(DEBUG), 1)
+	CFLAGS += -Og -g
+else
+	CFLAGS += -flto -O2 -DNDEBUG
+	LDFLAGS += -flto -O2
+endif
 
-SRCS_TEST = test.c vec.c
-OBJS_TEST = $(SRCS_TEST:.c=.o)
+all: $(BINARIES)
 
-.PHONY: all
-all: libvec.so
-
-libvec.so: LDFLAGS += -shared
-libvec.so: $(OBJS)
-	$(CC) $(CFLAGS) $(LDFLAGS) -o $@ $^
-
-$(OBJS): CFLAGS += -fPIC
-
-.PHONY: check
-check: test
-	@./test
+libvec.so: $(OBJECTS)
+	$(CC) $(CFLAGS) $(LDFLAGS) -shared $^ $(LDLIBS) -o $@
 
 test: LDLIBS += -lcheck
-test: $(OBJS_TEST)
+test: test.c $(OBJECTS)
 
-.PHONY: install
-install: all
-	$(INSTALL) -d $(DESTDIR)$(libdir)
-	$(INSTALL_PROGRAM) libvec.so $(DESTDIR)$(libdir)
-	$(INSTALL) -d $(DESTDIR)$(includedir)
-	$(INSTALL_PROGRAM) vec.h $(DESTDIR)$(includedir)
+vec.o: vec.c vec.h
 
-.PHONY: uninstall
-uninstall:
-	$(RM) $(DESTDIR)$(libdir)/libvec.so
-	$(RM) $(DESTDIR)$(includedir)/vec.h
-
-.PHONY: clean
 clean:
-	$(RM) *.o *.so test tags
+	rm -f $(OBJECTS) $(BINARIES)
 
-.PHONY: tags
-TAGS:
-	ctags -R "$(srcdir)"
+.PHONY: all clean
