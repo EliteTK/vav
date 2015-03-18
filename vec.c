@@ -1,8 +1,9 @@
+#include "vec.h"
+#include <math.h>
+#include <stdbool.h>
 #include <stdint.h>
 #include <stdlib.h>
 #include <string.h>
-#include <math.h>
-#include "vec.h"
 
 #define _VEC_MIN_LENGTH(a, b) ({ \
 		double _a = VEC_HEADER(a)->length; \
@@ -11,26 +12,40 @@
 		})
 
 
+static inline bool length_will_overflow(const uint64_t length)
+{
+	if (length > sizeof(uint64_t) - sizeof(struct vec_header) - 1)
+		return true;
+
+	return false;
+}
+
 double *vec_new(const uint64_t length, const double * const values)
 {
-	struct vec_header *vector = malloc(sizeof(struct vec_header) * (length + 1));
+	if (length_will_overflow(length))
+		return NULL;
 
-	vector->temp   = 1;
-	vector->length = length;
+	struct vec_header *header = malloc(sizeof(struct vec_header) * (length + 1));
 
-	memcpy(vector + 1, values, length * sizeof(double));
+	header->temp   = true;
+	header->length = length;
 
-	return (double *)(vector + 1);
+	memcpy(header->vector, values, length * sizeof(double));
+
+	return (double *)(header->vector);
 }
 
 double *vec_blank(const uint64_t length)
 {
-	struct vec_header *vector = calloc(sizeof(struct vec_header), (length + 1));
+	if (length_will_overflow(length))
+		return NULL;
 
-	vector->temp   = 1;
-	vector->length = length;
+	struct vec_header *header = calloc(length + 1, sizeof(struct vec_header));
 
-	return (double *)(vector + 1);
+	header->temp   = true;
+	header->length = length;
+
+	return (double *)(header->vector);
 }
 
 void vec_del(double * const vector)
