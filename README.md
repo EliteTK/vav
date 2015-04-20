@@ -32,6 +32,8 @@ an easy way to get the length squared.)
 `vec_addm` takes three parameters, `vector_a`, `vector_b` and `multiplier`.
 `vec_addm` returns `vector_a` + `vector_b` * `multiplier`.
 
+`vec_norm` returns the normalised vector.
+
 `vec_blank` takes one parameter of length and creates a completely zeroed
 vector of that length.
 
@@ -41,7 +43,7 @@ be used to deallocate the resulting vector.
 
 `vec_deltemp` will only delete temporary vectors and currently has little use.
 
-`vav_temp` and `vav_perm` set the vector to be temporary or permament
+`vav_temp` and `vav_perm` set the vector to be temporary or permanent
 respectively.
 
 Quick Example
