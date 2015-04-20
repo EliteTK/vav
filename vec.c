@@ -153,4 +153,12 @@ double *vec_addm(double * const vector_a, double * const vector_b, const double 
 	return output;
 }
 
-#undef _VEC_MIN_LENGTH
+double *vec_norm(double * const vector)
+{
+	if (VEC_HEADER(vector)->temp) {
+		double length = vec_len(vec_perm(vector));
+		return vec_addm(vec_blank(3), vec_temp(vector), 1 / length);
+	} else {
+		return vec_addm(vec_blank(3), vector, 1 / vec_len(vector));
+	}
+}

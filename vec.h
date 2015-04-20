@@ -19,6 +19,7 @@ double vec_dot(double * const vector_a, double * const vector_b);
 double *vec_cross(double * const vector_a, double * const vector_b);
 double vec_len(double * const vector);
 double *vec_addm(double * const vector_a, double * const vector_b, const double multiplier);
+double *vec_norm(double * const vector);
 
 #define VEC_HEADER(vector) ((struct vec_header *)(vector - 1))
 

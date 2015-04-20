@@ -95,6 +95,18 @@ START_TEST (test_vec_math_addm)
 }
 END_TEST
 
+START_TEST (test_vec_math_norm)
+{
+	double *result = vec_norm(vec(3, 4));
+
+	ck_assert_msg(result[0] >= 0.6 - 1e-16 && result[0] <= 0.6 + 1e-16, "Unit vector of (3, 4) [0] is not 0.6 (%f).", result[0]);
+	ck_assert_msg(result[1] >= 0.8 - 1e-16 && result[1] <= 0.8 + 1e-16, "Unit vector of (3, 4) [1] is not 0.8 (%f).", result[1]);
+	// Fuck you floating point errors.
+
+	vec_del(result);
+}
+END_TEST
+
 Suite *vec_suite(void)
 {
 	Suite *s;
@@ -119,6 +131,7 @@ Suite *vec_suite(void)
 	tcase_add_test(tc_math, test_vec_math_cross);
 	tcase_add_test(tc_math, test_vec_math_len);
 	tcase_add_test(tc_math, test_vec_math_addm);
+	tcase_add_test(tc_math, test_vec_math_norm);
 
 	suite_add_tcase(s, tc_math);
 
