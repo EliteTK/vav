@@ -17,6 +17,9 @@ all: $(BINARIES)
 libvec.so: $(OBJECTS)
 	$(CC) $(CFLAGS) $(LDFLAGS) -shared $^ $(LDLIBS) -o $@
 
+check: test
+	@./test
+
 test: LDLIBS += -lcheck
 test: test.c $(OBJECTS)
 
@@ -25,4 +28,4 @@ vec.o: vec.c vec.h
 clean:
 	rm -f $(OBJECTS) $(BINARIES)
 
-.PHONY: all clean
+.PHONY: all clean check
