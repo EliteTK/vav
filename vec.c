@@ -58,18 +58,6 @@ void vec_deltemp(double * const vector)
 		vec_del(vector);
 }
 
-inline double *vec_temp(double * const vector)
-{
-	VEC_HEADER(vector)->temp = 1;
-	return vector;
-}
-
-inline double *vec_perm(double * const vector)
-{
-	VEC_HEADER(vector)->temp = 0;
-	return vector;
-}
-
 
 double vec_dot(double * const vector_a, double * const vector_b)
 {
