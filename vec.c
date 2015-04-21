@@ -143,11 +143,6 @@ double *vec_addm(double * const vector_a, double * const vector_b, const double 
 
 	if (vech_a->temp && vech_b->temp)
 		vec_deltemp(vector_b);
-	else if (vech_b->temp);
-	else {
-		vec_deltemp(vector_a);
-		vec_deltemp(vector_b);
-	}
 
 	return output;
 }
