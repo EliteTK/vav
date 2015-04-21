@@ -2,6 +2,9 @@
 #include <check.h>
 #include <stdlib.h>
 
+#define EPSILON 1e-16
+#define CLOSE_ENOUGH(a, b) ((a) >= (b) - EPSILON && (a) <= (b) + EPSILON)
+
 START_TEST (test_vec)
 {
 	double *vector = vec(4, 7, 2);
@@ -99,8 +102,8 @@ START_TEST (test_vec_math_norm)
 {
 	double *result = vec_norm(vec(3, 4));
 
-	ck_assert_msg(result[0] >= 0.6 - 1e-16 && result[0] <= 0.6 + 1e-16, "Unit vector of (3, 4) [0] is not 0.6 (%f).", result[0]);
-	ck_assert_msg(result[1] >= 0.8 - 1e-16 && result[1] <= 0.8 + 1e-16, "Unit vector of (3, 4) [1] is not 0.8 (%f).", result[1]);
+	ck_assert_msg(CLOSE_ENOUGH(result[0], 0.6), "Unit vector of (3, 4) [0] is not 0.6 (%f).", result[0]);
+	ck_assert_msg(CLOSE_ENOUGH(result[1], 0.8), "Unit vector of (3, 4) [1] is not 0.8 (%f).", result[1]);
 	// Fuck you floating point errors.
 
 	vec_del(result);
