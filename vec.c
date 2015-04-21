@@ -11,7 +11,6 @@
 		_a < _b ? _a : _b; \
 		})
 
-
 static inline bool length_will_overflow(const uint64_t length)
 {
 	if (length > (sizeof(uint64_t) >> 1) - sizeof(struct vec_header))
@@ -155,10 +154,39 @@ double *vec_addm(double * const vector_a, double * const vector_b, const double 
 
 double *vec_norm(double * const vector)
 {
-	if (VEC_HEADER(vector)->temp) {
-		double length = vec_len(vec_perm(vector));
-		return vec_addm(vec_blank(3), vec_temp(vector), 1 / length);
+	struct vec_header *vech = VEC_HEADER(vector);
+
+	double *output;
+
+#ifdef VAV_FAST
+	double ilength;
+
+	if (vech->temp) {
+		ilength = 1 / vec_len(vec_perm(vector));
+		vec_temp(vector);
+		output = vector;
 	} else {
-		return vec_addm(vec_blank(3), vector, 1 / vec_len(vector));
+		ilength = 1 / vec_len(vector);
+		output = vec_blank(vech->length);
 	}
+
+	for (uint64_t i = 0; i < vech->length; i++)
+		output[i] = vector[i] * ilength;
+#else
+	double length;
+
+	if (vech->temp) {
+		length = vec_len(vec_perm(vector));
+		vec_temp(vector);
+		output = vector;
+	} else {
+		length = vec_len(vector);
+		output = vec_blank(vech->length);
+	}
+
+	for (uint64_t i = 0; i < vech->length; i++)
+		output[i] = vector[i] / length; /* SLOW */
+#endif
+
+	return output;
 }

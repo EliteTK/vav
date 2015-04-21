@@ -1,4 +1,5 @@
 #ifndef __VEC_H
+#define __VEC_H
 
 #include <stdint.h>
 
@@ -25,5 +26,6 @@ double *vec_norm(double * const vector);
 
 #define vec(...) vec_new(sizeof((double []){ __VA_ARGS__ }) / sizeof(double), (double []){ __VA_ARGS__ })
 
-#define __VEC_H
+#define VEC_FAST
+
 #endif /* __VEC_H */
