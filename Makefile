@@ -28,4 +28,7 @@ vec.o: vec.c vec.h
 clean:
 	rm -f $(OBJECTS) $(BINARIES)
 
-.PHONY: all clean check
+docs:
+	doxygen docs/doxygen.conf
+
+.PHONY: all clean check docs
