@@ -13,7 +13,7 @@
 
 static inline bool length_will_overflow(const uint64_t length)
 {
-	if (length > (sizeof(uint64_t) >> 1) - sizeof(struct vec_header))
+	if (length > (UINT64_MAX / 2) - sizeof(struct vec_header))
 		return true;
 
 	return false;
@@ -21,27 +21,35 @@ static inline bool length_will_overflow(const uint64_t length)
 
 double *vec_new(const uint64_t length, const double * const values)
 {
+	struct vec_header *header;
+
 	if (length_will_overflow(length))
 		return NULL;
 
-	struct vec_header *header = malloc(sizeof(struct vec_header) * (length + 1));
+	/* WARNING: Assuming sizeof header == sizeof (double) is a bad idea */
+	if (!(header = malloc(sizeof header * (length + 1))))
+		return NULL;
 
-	header->temp   = true;
+	header->temp = true;
 	header->length = length;
 
-	memcpy(header->vector, values, length * sizeof(double));
+	memcpy(header->vector, values, length * sizeof (double));
 
 	return (double *)(header->vector);
 }
 
 double *vec_blank(const uint64_t length)
 {
+	struct vec_header *header;
+
 	if (length_will_overflow(length))
 		return NULL;
 
-	struct vec_header *header = calloc(length + 1, sizeof(struct vec_header));
+	/* WARNING: Assuming sizeof header == sizeof (double) is a bad idea */
+	if (!(header = calloc(length + 1, sizeof header)))
+		return NULL;
 
-	header->temp   = true;
+	header->temp = true;
 	header->length = length;
 
 	return (double *)(header->vector);
@@ -49,7 +57,7 @@ double *vec_blank(const uint64_t length)
 
 void vec_del(double * const vector)
 {
-	free(vector - 1);
+	free(VEC_HEADER(vector));
 }
 
 void vec_deltemp(double * const vector)
@@ -62,8 +70,10 @@ void vec_deltemp(double * const vector)
 double vec_dot(double * const vector_a, double * const vector_b)
 {
 	uint64_t length = _VEC_MIN_LENGTH(vector_a, vector_b);
-
 	double result = 0;
+
+	if (!vector_a || !vector_b)
+		return 0; /* TODO: Find some way of dealing with errors */
 
 	for (uint64_t i = 0; i < length; i++)
 		result += vector_a[i] * vector_b[i];
@@ -78,13 +88,16 @@ double vec_dot(double * const vector_a, double * const vector_b)
 
 double *vec_cross(double * const vector_a, double * const vector_b)
 {
+	double i, j, k;
 	struct vec_header *vech_a = VEC_HEADER(vector_a);
 	struct vec_header *vech_b = VEC_HEADER(vector_b);
+
+	if (!vector_a || !vector_b)
+		return NULL;
 
 	if (vech_a->length != vech_b->length && vech_a->length != 3)
 		return NULL;
 
-	double i, j, k;
 	i = vector_a[1] * vector_b[2] - vector_a[2] * vector_b[1];
 	j = vector_a[2] * vector_b[0] - vector_a[0] * vector_b[2];
 	k = vector_a[0] * vector_b[1] - vector_a[1] * vector_b[0];
@@ -110,14 +123,16 @@ double vec_len(double * const vector)
 	return sqrtf(vec_dot(vector, vector));
 }
 
-double *vec_addm(double * const vector_a, double * const vector_b, const double multiplier)
+double *vec_addm(double * const vector_a, double * const vector_b,
+		 const double multiplier)
 {
 	struct vec_header *vech_a = VEC_HEADER(vector_a);
 	struct vec_header *vech_b = VEC_HEADER(vector_b);
-
 	uint64_t length = _VEC_MIN_LENGTH(vector_a, vector_b);
-
 	double *output;
+
+	if (!vector_a || !vector_b)
+		return NULL;
 
 	if (vech_a->temp)
 		output = vector_a;
@@ -138,25 +153,25 @@ double *vec_addm(double * const vector_a, double * const vector_b, const double 
 double *vec_norm(double * const vector)
 {
 	struct vec_header *vech = VEC_HEADER(vector);
-
 	double *output;
+	double length;
+
+	if (!vector)
+		return NULL;
 
 #ifdef VAV_FAST
-	double ilength;
-
 	if (vech->temp) {
-		ilength = 1 / vec_len(vec_perm(vector));
+		length = 1 / vec_len(vec_perm(vector));
 		vec_temp(vector);
 		output = vector;
 	} else {
-		ilength = 1 / vec_len(vector);
+		length = 1 / vec_len(vector);
 		output = vec_blank(vech->length);
 	}
 
 	for (uint64_t i = 0; i < vech->length; i++)
-		output[i] = vector[i] * ilength;
+		output[i] = vector[i] * length;
 #else
-	double length;
 
 	if (vech->temp) {
 		length = vec_len(vec_perm(vector));
@@ -168,7 +183,7 @@ double *vec_norm(double * const vector)
 	}
 
 	for (uint64_t i = 0; i < vech->length; i++)
-		output[i] = vector[i] / length; /* SLOW */
+		output[i] = vector[i] / length;
 #endif
 
 	return output;

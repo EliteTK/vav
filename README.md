@@ -6,6 +6,9 @@ About
 Very Awesome Vectors (VAV) is an attempt at implementing vectors in C, but
 doing so in a manner that doesn't look like something a dog chewed on.
 
+__There are issues with VAV and an overall issue about its implementation, these
+issues are detailed below.__
+
 Currently, I have no clue how large vectors can be but the vector length stored
 in the header can get up to 9223372036854775807. The limit is then made smaller
 by the check for a heap overflow and possibly even smaller because of the use
@@ -76,3 +79,16 @@ There are plans to rename all the functions into something shorter and
 more vav oriented, for example: `vav_c, vav_d, vav_l, vav_a and vav` for the
 most used stackable functions. Or possible even `v_c, v_d, v_l and v` but
 really, this is a drop in solution, want something different? Just changed it.
+
+Issues
+------
+Sadly, VAV has some issues, the biggest two issues are a lack of error
+reporting and the fact that VAV uses malloc for every vector.
+
+The first issue makes it unusable in any kind of real application and the
+second issue makes VAV slow.
+
+VAV still makes sense to use when prototyping some kind of vector application,
+but it really makes far more sense to start off using a good vector
+implementation to begin with. In reality, nobody really needs 1000 element
+vectors. You just need 2, 3 and 4 element vectors and then some good matrices.
